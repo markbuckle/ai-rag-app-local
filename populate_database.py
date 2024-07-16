@@ -41,6 +41,7 @@ def load_documents():
     return document_loader.load()
 
 
+# split the documents to make smaller data chunks
 def split_documents(documents: list[Document]):
     text_splitter = RecursiveCharacterTextSplitter(
         chunk_size=800,

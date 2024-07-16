@@ -1,15 +1,17 @@
 import argparse
 import os
 import shutil
-from langchain.document_loaders.pdf import PyPDFDirectoryLoader
-from langchain_text_splitters import RecursiveCharacterTextSplitter
-from langchain.schema.document import Document
+from langchain_community.document_loaders import PyPDFDirectoryLoader  # type: ignore
+
+# from langchain_community.document_loaders import UnstructuredMarkdownLoader
+from langchain_text_splitters import RecursiveCharacterTextSplitter  # type: ignore
+from langchain.schema.document import Document  # type: ignore
 from get_embedding_function import get_embedding_function
-from langchain.vectorstores.chroma import Chroma
+from langchain_community.vectorstores import Chroma  # type: ignore
 
 
 CHROMA_PATH = "chroma"
-DATA_PATH = "data"
+DATA_PATH = "data/hubermanlabtranscripts"
 
 
 def main():
@@ -28,7 +30,13 @@ def main():
     add_to_chroma(chunks)
 
 
+# get data from inside the data folder
 def load_documents():
+    # load markdown's
+    # loader = UnstructuredMarkdownLoader(DATA_PATH)
+    # mdData = loader.load()
+
+    # load PDFs
     document_loader = PyPDFDirectoryLoader(DATA_PATH)
     return document_loader.load()
 

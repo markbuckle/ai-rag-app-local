@@ -63,12 +63,11 @@ python query_data.py "who is Andrew Huberman?"
 
 <p>Quality of answers will depend on:</p>
 <os>
-<li>:point_right: Source material</li>
-<li>:point_right: Text splitting strategy</li>
-<li>:point_right: LLM model and prompt</li>
+<li>Source material</li>
+<li>Text splitting strategy</li>
+<li>LLM model and prompt</li>
 </os>
 
- :grinning:  :smiley: 
 ## Tutorial video: 
 
 [Python RAG Tutorial (with Local LLMs): AI For Your PDFs](https://www.youtube.com/watch?v=2TJxpyO3ei4)

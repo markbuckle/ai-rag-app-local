@@ -5,4 +5,4 @@ langchain #LLM library
 langchain-community #LLM library
 chromadb # Vector storage
 pytest # Unit testing
-boto3 # AWS Software Development Kit (SDK) for Pythonpip i
+boto3 # AWS Software Development Kit (SDK) for Python

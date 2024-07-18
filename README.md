@@ -66,7 +66,7 @@ Quality of answers will depend on:
 :point_right: Text splitting strategy
 :point_right: LLM model and prompt
 
-(#smileys--emotion) | :grinning: | `:grinning:` | :smiley: | `:smiley:` | [top](#table-of-contents) |
+ :grinning: | `:grinning:` | :smiley: | `:smiley:` | [top](#table-of-contents) |
 
 ## Tutorial video: 
 

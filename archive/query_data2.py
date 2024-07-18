@@ -21,26 +21,28 @@ Answer the question based on the above context: {question}
 
 def get_language_model_response(prompt):
     session = boto3.Session(profile_name="MBAdmin")
-    client = session.client("bedrock-runtime", region_name="us-east-1")
-    model_id = "amazon.titan-text-premier-v1:0"
-
-    native_request = {
-        "inputText": prompt,
-        "textGenerationConfig": {
-            "maxTokenCount": 512,
-            "temperature": 0.5,
-        },
-    }
-
-    request = json.dumps(native_request)
-
+    client = boto3.client("bedrock-runtime", region_name="us-east-1")
     try:
-        response = client.invoke_model(modelId=model_id, body=request)
+        response = client.invoke_model(
+            modelId="amazon.titan-text-premier-v1:0",
+            body=json.dumps(
+                {
+                    "inputText": prompt,
+                    "textGenerationConfig": {
+                        "maxTokenCount": 512,
+                        "temperature": 0.5,
+                    },
+                },
+            ),
+            contentType="application/json",
+        )
         response_body = json.loads(response["body"].read())
-        generated_text = response_body["results"][0]["outputText"]
+        generated_text = response_body.get("generated_text")
+        if generated_text is None:
+            raise ValueError("No generated text found in the response.")
         return generated_text
     except (ClientError, Exception) as e:
-        print(f"ERROR: Can't invoke '{model_id}'. Reason: {e}")
+        print(f"ERROR: Can't invoke language model. Reason: {e}")
         return None
 
 

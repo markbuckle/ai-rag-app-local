@@ -62,8 +62,8 @@ python query_data.py "who is Andrew Huberman?"
 # test your RAG 
 
 <p>Quality of answers will depend on:</p>
-<p>:point_right: Source material
-:point_right: Text splitting strategy
+<p>:point_right: Source material<br></br>
+:point_right: Text splitting strategy<br></br>
 :point_right: LLM model and prompt</p>
 
  :grinning:  :smiley: 

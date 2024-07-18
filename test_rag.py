@@ -1,5 +1,27 @@
 from query_data import query_rag
-from langchain_community.llms.ollama import Ollama
+import boto3
+import json
+import datetime
+import warnings
+
+# Replace utcfromtimestamp
+_EPOCH_DATETIME_NAIVE = datetime.datetime.fromtimestamp(0, datetime.timezone.utc)
+
+# Replace utcnow
+datetime_now = datetime.datetime.now(datetime.timezone.utc)
+
+warnings.filterwarnings(
+    "ignore",
+    message="datetime.datetime.utcfromtimestamp() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.fromtimestamp(timestamp, datetime.UTC).",
+    category=DeprecationWarning,
+)
+
+warnings.filterwarnings(
+    "ignore",
+    message="datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).",
+    category=DeprecationWarning,
+)
+
 
 EVAL_PROMPT = """
 Expected Response: {expected_response}
@@ -9,31 +31,52 @@ Actual Response: {actual_response}
 """
 
 
-def test_monopoly_rules():
+def get_evaluation_response(prompt):
+    session = boto3.Session(profile_name="MBAdmin")
+    client = session.client("bedrock-runtime", region_name="us-east-1")
+    model_id = "amazon.titan-text-premier-v1:0"
+
+    native_request = {
+        "inputText": prompt,
+        "textGenerationConfig": {
+            "maxTokenCount": 512,
+            "temperature": 0.5,
+        },
+    }
+
+    request = json.dumps(native_request)
+
+    try:
+        response = client.invoke_model(modelId=model_id, body=request)
+        response_body = json.loads(response["body"].read())
+        evaluation_results_str = response_body["results"][0]["outputText"]
+        return evaluation_results_str.strip().lower()
+    except (ClientError, Exception) as e:
+        print(f"ERROR: Can't invoke '{model_id}'. Reason: {e}")
+        return None
+
+
+def test_rules():
     assert query_and_validate(
-        question="How much total money does a player start with in Monopoly? (Answer with the number only)",
-        expected_response="$1500",
+        question="What does PRP stand for?",
+        expected_response="Platelet Rich Plasma",
     )
 
 
-def test_ticket_to_ride_rules():
-    assert query_and_validate(
-        question="How many points does the longest continuous train get in Ticket to Ride? (Answer with the number only)",
-        expected_response="10 points",
-    )
-
-
+# helper function
 def query_and_validate(question: str, expected_response: str):
     response_text = query_rag(question)
     prompt = EVAL_PROMPT.format(
         expected_response=expected_response, actual_response=response_text
     )
 
-    model = Ollama(model="mistral")
-    evaluation_results_str = model.invoke(prompt)
-    evaluation_results_str_cleaned = evaluation_results_str.strip().lower()
+    evaluation_results_str_cleaned = get_evaluation_response(prompt)
 
     print(prompt)
+
+    # interpret result
+    if evaluation_results_str_cleaned is None:
+        raise ValueError("Failed to get evaluation response from the model.")
 
     if "true" in evaluation_results_str_cleaned:
         # Print response in Green if it is correct.
@@ -47,3 +90,7 @@ def query_and_validate(question: str, expected_response: str):
         raise ValueError(
             f"Invalid evaluation result. Cannot determine if 'true' or 'false'."
         )
+
+
+if __name__ == "__main__":
+    test_rules()

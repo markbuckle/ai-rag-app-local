@@ -66,6 +66,8 @@ Quality of answers will depend on:
 :point_right: Text splitting strategy
 :point_right: LLM model and prompt
 
+| [top](#smileys--emotion) | :grinning: | `:grinning:` | :smiley: | `:smiley:` | [top](#table-of-contents) |
+
 ## Tutorial video: 
 
 [Python RAG Tutorial (with Local LLMs): AI For Your PDFs](https://www.youtube.com/watch?v=2TJxpyO3ei4)

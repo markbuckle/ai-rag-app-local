@@ -68,6 +68,20 @@ python query_data.py "who is Andrew Huberman?"
 <li>LLM model and prompt</li>
 </os>
 
+Ask a question that you know the answer to with high certainty. For example, 
+
+Question: "What does PRP stand for?"
+Expected response: "Platelet Rich Plasma"
+
+test the file using 
+```python
+python test_rag.py
+```
+or 
+```python
+pytest
+```
+
 ## Tutorial video: 
 
 [Python RAG Tutorial (with Local LLMs): AI For Your PDFs](https://www.youtube.com/watch?v=2TJxpyO3ei4)
